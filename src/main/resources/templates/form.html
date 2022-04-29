@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WP project - CinemaxX Dammtor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-
+1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        #footer {
+            position:absolute;
+            bottom:0;
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-
+ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<header xmlns:th="http://www.thymeleaf.org">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">CinemaxX - Dammtor</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+                    aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+                <ul class="navbar-nav m-auto">
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" href="/Movies">Movies</a>
+                    </li>
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" sec:authorize="hasRole('ROLE_MASTER')" href="/Movies/add">Add new movie</a>
+                    </li>
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" sec:authorize="hasRole('ROLE_MASTER')" href="/locations">Location for cinemas</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="#">
+                            <th:block th:if="${#request.getRemoteUser() != null}"
+                                      th:text="${#request.getRemoteUser()}"></th:block>
+                        </a>
+                    </li>
+
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="btn btn-light btn-sm ml-3" href="/logout">
+                            <i class="fa fa-shopping-cart"></i> Logout
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="btn btn-light btn-sm ml-3" href="/login">
+                            <i class="fa fa-shopping-cart"></i> Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<br>
+<div style="text-align: center">
+<form th:action="@{'/Movies/{id}' (id=${Movie?.getId()})}" th:method="POST">
+    <div>
+        <label for="f1">Title</label>
+        <input type="text"
+               id="f1"
+               name="title"
+               th:value="${Movie?.getTitle()}"
+               required>
+    </div>
+    <div>
+        <label for="f2">Description</label>
+        <input type="text"
+               id="f2"
+               name="description"
+               th:value="${Movie?.getDescription()}"
+               required>
+    </div>
+    <div>
+        <label for="f6">Screening start day</label>
+        <input type="date"
+               id="f6"
+               name="screeningStartDay"
+               th:value="${Movie?.getscreeningStartDay()}"
+               required>
+    </div>
+    <div>
+        <label>Genre</label><br/>
+        <select id="f4" name="MovieGenre">
+            <option th:each="genre:${Genres}"
+                    th:text="${genre.name()}"
+                    th:value="${genre}"
+                    th:selected="${Movie!=null ? Movie.getGenre().toString().equals(genre.toString()):null}"> [Genre_name]</option>
+        </select>
+    </div>
+    <div>
+        <label>Viewers</label><br/>
+        <select id="f5" name="Users" multiple>
+            <option th:each="user:${users}"
+                    th:value="${user.getId()}"
+                    th:selected="${Movie != null ? Movie.getUsers().contains(user):null}"
+                    th:text="${user.getUsername()}"
+            > [User.username]</option>
+        </select>
+    </div>
+    <button id="submit" type="submit">Submit</button>
+    <a id="back" href="/Movies" type="button" class="btn btn-primary">Back to Movies</a>
+</form>
+</div>
+<footer id="footer" class="bg-dark text-center text-white">
+    <div class="container p-4 pb-0">
+        <section class="">
+            <form action="">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-auto">
+                        <p class="pt-2">
+                            <strong>Sign up for our newsletter</strong>
+                        </p>
+                    </div>
+                    <div class="col-md-5 col-12">
+                        <div class="form-outline form-white mb-4">
+                            <input type="email" id="form5Example29" class="form-control" />
+                            <label class="form-label" for="form5Example29">Email address</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-outline-light mb-4">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2020 Copyright:
+        <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+    </div>
+</footer>
+</body>
+</html>

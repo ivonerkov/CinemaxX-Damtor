@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WP project - CinemaxX Dammtor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-
+1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        #footer {
+            position:absolute;
+            bottom:0;
+            width:100%;
+        }
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-
+ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<header xmlns:th="http://www.thymeleaf.org">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">CinemaxX - Dammtor</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+                    aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+                <ul class="navbar-nav m-auto">
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" href="/Movies">Movies</a>
+                    </li>
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active" sec:authorize="hasRole('ROLE_MASTER')" href="/Movies/add">Add new movie</a>
+                    </li>
+                    <li class="nav-item m-auto">
+                        <a class="nav-link active"  href="/locations">Location for cinemas</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="#">
+                            <th:block th:if="${#request.getRemoteUser() != null}"
+                                      th:text="${#request.getRemoteUser()}"></th:block>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="btn btn-light btn-sm ml-3" href="/logout">
+                            <i class="fa fa-shopping-cart"></i> Logout
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="btn btn-light btn-sm ml-3" href="/login">
+                            <i class="fa fa-shopping-cart"></i> Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<br>
+<div style="text-align: center">
+    <div>
+        <a th:href="@{'/locations/add'}" sec:authorize="hasRole('ROLE_MASTER')"  class="add-item">
+            Add new location
+        </a>
+    </div>
+    <table class="center">
+        <tr>
+            <th>Location name</th>
+            <th>Description</th>
+            <th>City</th>
+            <th>Movies in this location</th>
+            <th>Delete</th>
+        </tr>
+        <tr class="item" th:each="location:${locations}">
+            <td th:text="${location.getName()}">[location.name]</td>
+            <td th:text="${location.getDescription()}">[location.description]</td>
+            <td th:text="${location.getLocation().getName()}">[location.location]</td>
+            <td>
+                <span class="item-rel" th:each="movie:${location.getMovies()}"
+                      th:text="${movie.getTitle()}"> [user.username]
+                </span>
+            </td>
+            <td>
+                <th:block sec:authorize="hasRole('ROLE_MASTER')">
+                    <form th:action="@{'/locations/{id}/delete' (id=${location.getId()})}" th:method="POST">
+                        <button type="submit" class="delete-item">Delete</button>
+                    </form>
+                </th:block>
+            </td>
+        </tr>
+    </table>
+</div>
+<footer id="footer" class="bg-dark text-center text-white">
+    <div class="container p-4 pb-0">
+        <section class="">
+            <form action="">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-auto">
+                        <p class="pt-2">
+                            <strong>Sign up for our newsletter</strong>
+                        </p>
+                    </div>
+                    <div class="col-md-5 col-12">
+                        <div class="form-outline form-white mb-4">
+                            <input type="email" id="form5Example29" class="form-control" />
+                            <label class="form-label" for="form5Example29">Email address</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-outline-light mb-4">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2020 Copyright:
+        <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+    </div>
+</footer>
+</body>
+</html>
